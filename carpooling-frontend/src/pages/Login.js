@@ -31,7 +31,7 @@ function Login() {
                 <button type="submit" className="w-full bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500">Iniciar sesión</button>
 
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400 mt-4">
-                    ¿No tienes una cuenta? <a href="register.html" className="font-medium text-blue-700 hover:underline dark:text-blue-500">Regístrate</a>
+                    ¿No tienes una cuenta? <a href="/register" className="font-medium text-blue-700 hover:underline dark:text-blue-500">Regístrate</a>
                 </p>
             </form>
         </div>

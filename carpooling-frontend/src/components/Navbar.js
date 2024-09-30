@@ -30,7 +30,7 @@ const Navbar = () => {
     <nav className="bg-white border-gray-200 dark:bg-gray-900 rounded-lg shadow-lg mx-auto my-2" style={{ padding: '10px 20px', maxWidth: '95%', margin: '20px auto' }}>
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto">
         {/* Logo */}
-        <a href="https://flowbite.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
+        <a href="/landing" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img src="https://flowbite.com/docs/images/logo.svg" className="h-8" alt="Flowbite Logo" />
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">UrbanCarpool</span>
         </a>
@@ -80,7 +80,7 @@ const Navbar = () => {
         <div className={`absolute top-16 left-0 w-full bg-white dark:bg-gray-900 md:static md:flex md:w-auto ${isMenuOpen ? 'block' : 'hidden'}`}>
           <ul className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8 p-4 md:p-0">
             <li>
-              <a href="#" className="block py-2 px-3 text-gray-900 hover:bg-gray-100 md:hover:bg-transparent dark:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent">Home</a>
+              <a href="/landing" className="block py-2 px-3 text-gray-900 hover:bg-gray-100 md:hover:bg-transparent dark:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent">Home</a>
             </li>
             <li>
               <a href="#" className="block py-2 px-3 text-gray-900 hover:bg-gray-100 md:hover:bg-transparent dark:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent">About</a>
