@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import axios from 'axios'; // Utilizaremos axios para las peticiones HTTP
 
 const MapComponent = ({ origin, destination }) => {
   useEffect(() => {
@@ -11,7 +12,7 @@ const MapComponent = ({ origin, destination }) => {
     document.body.appendChild(script);
 
     // Definir la función de inicialización del mapa
-    window.initMap = () => {
+    window.initMap = async () => {
       const map = new window.google.maps.Map(document.getElementById('map'), {
         center: { lat: 20.6597, lng: -103.3496 }, // Coordenadas de Guadalajara, México
         zoom: 12,
@@ -19,23 +20,35 @@ const MapComponent = ({ origin, destination }) => {
 
       // Solo obtener direcciones si ambos valores están presentes
       if (origin && destination) {
-        const directionsService = new window.google.maps.DirectionsService();
-        const directionsRenderer = new window.google.maps.DirectionsRenderer();
-        directionsRenderer.setMap(map);
+        try {
+          // Hacemos una petición al backend para obtener las direcciones
+          const response = await axios.get(`http://localhost:8080/api/maps/directions`, {
+            params: { origin, destination },
+          });
 
-        const request = {
-          origin: origin,
-          destination: destination,
-          travelMode: window.google.maps.TravelMode.DRIVING,
-        };
+          const directionsService = new window.google.maps.DirectionsService();
+          const directionsRenderer = new window.google.maps.DirectionsRenderer();
+          directionsRenderer.setMap(map);
 
-        directionsService.route(request, (result, status) => {
-          if (status === 'OK') {
-            directionsRenderer.setDirections(result);
-          } else {
-            console.error('Error al obtener las direcciones:', status);
-          }
-        });
+          const result = response.data;
+
+          const routeRequest = {
+            origin: origin,
+            destination: destination,
+            travelMode: window.google.maps.TravelMode.DRIVING,
+          };
+
+          // Renderizar las direcciones en el mapa
+          directionsService.route(routeRequest, (res, status) => {
+            if (status === 'OK') {
+              directionsRenderer.setDirections(res);
+            } else {
+              console.error('Error al renderizar las direcciones:', status);
+            }
+          });
+        } catch (error) {
+          console.error('Error al obtener las direcciones del backend:', error);
+        }
       }
     };
 
