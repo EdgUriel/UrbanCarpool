@@ -29,6 +29,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/maps" element={<Maps />} />
         <Route path="/home" element={<LandingPage />} />
+        <Route path="/home" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/dashboard" element={<Dashboard />} />
@@ -46,6 +47,7 @@ function App() {
         />
         <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/mainpage" element={<MainPage />} />
+        <Route path="/supportpage" element={<SupportPage />} />
         <Route path="/supportpage" element={<SupportPage />} />
       </Routes>
       <Footer />
