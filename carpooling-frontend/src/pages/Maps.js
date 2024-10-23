@@ -15,7 +15,7 @@ const MapPage = () => {
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl mb-4">Selecciona el lugar de origen y destino</h2>
-      <LoadScript googleMapsApiKey="--AIzaSyAS2Z1oIi79XQ-AkDu1iWEG1e7B78T6Lxk">
+      <LoadScript googleMapsApiKey="REACT_APP_GOOGLE_MAPS_API_KEY">
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={center}
