@@ -61,7 +61,7 @@ const MapComponent = ({ origin, destination }) => {
   return (
     <div>
       {/* Div donde se renderiza el mapa */}
-      <div id="map" style={{ height: '800px', width: '100%' }}></div>
+      <div id="map" style={{ height: '400px', width: '100%', borderRadius: '8px', overflow: 'hidden' }}></div>
     </div>
   );
 };
