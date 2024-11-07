@@ -40,7 +40,7 @@ const ConfirmTrip = ({ tripDetails, onClose }) => {
           </div>
           <div className="flex items-center">
             <CurrencyDollarIcon className="h-5 w-5 mr-2 text-gray-500" />
-            <span>${tripDetails.price}</span>
+            <span>{tripDetails.price}</span>
           </div>
           <div className="flex items-center">
             <UserGroupIcon className="h-5 w-5 mr-2 text-gray-500" />
