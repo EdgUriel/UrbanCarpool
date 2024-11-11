@@ -20,6 +20,8 @@ import AccountSettings from "./pages/AccountSettings";
 import PublishConfirmation from "./pages/PublishConfirmation";
 import ReservationConfirmation from "./pages/ReservationConfirmation";
 import NotificationsPage from "./pages/NotificationsPage";
+import CreateRide from "./pages/CreateRide";
+import FindRide from "./pages/FindRide";
 
 function App() {
   return (
@@ -37,6 +39,8 @@ function App() {
         <Route path="/publish-ride" element={<PublishRide />} />
         <Route path="/ride-details" element={<RideDetails />} />
         <Route path="/user-profile" element={<UserProfile />} />
+        <Route path="/create-ride" element={<CreateRide />} />
+        <Route path="/find-ride" element={<FindRide />} />
         <Route path="/trip-history" element={<TripHistory />} />
         <Route path="/rating-reviews" element={<RatingsReviews />} />
         <Route path="/account-settings" element={<AccountSettings />} />

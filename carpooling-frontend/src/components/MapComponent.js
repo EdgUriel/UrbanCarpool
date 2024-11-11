@@ -1,23 +1,21 @@
 import React, { useEffect } from 'react';
 
-const MapComponent = ({ origin, destination }) => {
+const MapComponent = ({ origin, destination, mapId }) => {
   useEffect(() => {
-    // Cargar el script de Google Maps API cuando el componente se monta
     const script = document.createElement('script');
     const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY; // Accede a la clave de la variable de entorno
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap${mapId}`;
     script.async = true;
     script.defer = true;
     document.body.appendChild(script);
 
-    // Definir la función de inicialización del mapa
-    window.initMap = () => {
-      const map = new window.google.maps.Map(document.getElementById('map'), {
+    // Inicializa el mapa con un identificador único
+    window[`initMap${mapId}`] = () => {
+      const map = new window.google.maps.Map(document.getElementById(`map${mapId}`), {
         center: { lat: 20.6597, lng: -103.3496 }, // Coordenadas de Guadalajara, México
         zoom: 12,
       });
 
-      // Solo obtener direcciones si ambos valores están presentes
       if (origin && destination) {
         const directionsService = new window.google.maps.DirectionsService();
         const directionsRenderer = new window.google.maps.DirectionsRenderer();
@@ -42,13 +40,13 @@ const MapComponent = ({ origin, destination }) => {
     // Limpiar el script al desmontar el componente
     return () => {
       document.body.removeChild(script);
+      delete window[`initMap${mapId}`]; // Elimina la función de callback después de cada renderizado
     };
-  }, [origin, destination]); // Dependencias para que se vuelva a cargar el mapa al cambiar
+  }, [origin, destination, mapId]); // Dependencias para que se vuelva a cargar el mapa al cambiar
 
   return (
     <div>
-      {/* Div donde se renderiza el mapa */}
-      <div id="map" style={{ height: '400px', width: '100%', borderRadius: '8px', overflow: 'hidden' }}></div>
+      <div id={`map${mapId}`} style={{ height: '400px', width: '100%', borderRadius: '8px', overflow: 'hidden' }}></div>
     </div>
   );
 };
