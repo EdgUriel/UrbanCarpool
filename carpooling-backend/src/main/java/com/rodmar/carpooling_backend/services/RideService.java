@@ -30,7 +30,7 @@ public class RideService {
     public Ride updateRide(Long id, Ride ride) {
         Optional<Ride> existingRide = rideRepository.findById(id);
         if (existingRide.isPresent()) {
-            ride.setRideId(id); // Establecer el ID para actualizar el viaje existente
+            ride.setId(id); // Establecer el ID para actualizar el viaje existente
             return rideRepository.save(ride);
         } else {
             throw new RideNotFoundException("Ride with id " + id + " not found");

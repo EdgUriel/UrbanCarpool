@@ -5,126 +5,115 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "rides")
+@Table(name = "RIDES")
 public class Ride {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ride_seq")
     @SequenceGenerator(name = "ride_seq", sequenceName = "ride_seq", allocationSize = 1)
-    @Column(name = "ride_id")
-    private Long rideId;
+    @Column(name = "ID")
+    private Long id;
 
-    @Column(name = "origin", nullable = false)
-    private String origin;
+    @Column(name = "route_ID", nullable = false)
+    private Long routeId;
 
-    @Column(name = "destination", nullable = false)
-    private String destination;
+    @Column(name = "driver_ID", nullable = false)
+    private Long driverId;
+
+    @Column(name = "vehicle_ID", nullable = false)
+    private Long vehicleId;
+
+    @Column(name = "price", nullable = false, precision = 10)
+    private BigDecimal price;
+
+    @Column(name = "status", nullable = false)
+    private String status;
 
     @Column(name = "available_seats", nullable = false)
     private Integer availableSeats;
 
-    @Column(name = "car", nullable = false)
-    private String car;
+    @Column(name = "max_seats", nullable = false)
+    private Integer maxSeats;
 
-    @Column(name = "plate", nullable = false)
-    private String plate;
+    @Column(name = "pets_allowed")
+    private Character petsAllowed;  // 'Y' para sí, 'N' para no
 
-    @Column(name = "departure_datetime", nullable = false)  // Cambié "departure_time" a "departure_datetime"
-    private LocalDateTime departureDatetime;  // Cambié el nombre a "departureDatetime" para reflejar el cambio
+    @Column(name = "rating", precision = 2)
+    private Double rating;
 
-    @Column(name = "seat_price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal seatPrice;
+    @Column(name = "departure_datetime", nullable = false)
+    private LocalDateTime departureDatetime;
 
-    @Column(name = "driver_name", nullable = false)
-    private String driverName;
-
-    @Column(name = "driver_phone")
-    private String driverPhone;
-
-    @Column(name = "driver_rating")
-    private Double driverRating;
-
-    @Column(name = "pets_allowed")  // Cambié "Character" por "Integer" para reflejar el uso de 0/1
-    private Integer petsAllowed;  // Cambié de "Character" a "Integer"
-
-    @Column(name = "music_preference")  // Cambié "Character" por "Integer" para reflejar el uso de 0/1
-    private Integer musicPreference;  // Cambié de "Character" a "Integer"
-
-    @Column(name = "driver_gender")
-    private String driverGender;
-
-    @Column(name = "travel_preference")
-    private String travelPreference;
-
-    @Column(name = "max_passenger_price")
-    private BigDecimal maxPassengerPrice;
-
-    @Column(name = "passenger_seats_needed")
-    private Integer passengerSeatsNeeded;
-
-    @Column(name = "require_pets")  // Cambié "Character" por "Integer" para reflejar el uso de 0/1
-    private Integer requirePets;  // Cambié de "Character" a "Integer"
-
-    @Column(name = "require_music")  // Cambié "Character" por "Integer" para reflejar el uso de 0/1
-    private Integer requireMusic;  // Cambié de "Character" a "Integer"
-
-    @Column(name = "require_gender")
-    private String requireGender;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     // Constructor sin parámetros
     public Ride() {}
 
     // Constructor con parámetros
-    public Ride(String origin, String destination, Integer availableSeats, String car, String plate, 
-                LocalDateTime departureDatetime, BigDecimal seatPrice, String driverName, 
-                String driverPhone, Double driverRating, Integer petsAllowed, Integer musicPreference, 
-                String driverGender, String travelPreference, BigDecimal maxPassengerPrice, 
-                Integer passengerSeatsNeeded, Integer requirePets, Integer requireMusic, String requireGender) {
-        this.origin = origin;
-        this.destination = destination;
+    public Ride(Long routeId, Long driverId, Long vehicleId, BigDecimal price, String status, Integer availableSeats,
+                Integer maxSeats, Character petsAllowed, Double rating, LocalDateTime departureDatetime) {
+        this.routeId = routeId;
+        this.driverId = driverId;
+        this.vehicleId = vehicleId;
+        this.price = price;
+        this.status = status;
         this.availableSeats = availableSeats;
-        this.car = car;
-        this.plate = plate;
-        this.departureDatetime = departureDatetime;
-        this.seatPrice = seatPrice;
-        this.driverName = driverName;
-        this.driverPhone = driverPhone;
-        this.driverRating = driverRating;
+        this.maxSeats = maxSeats;
         this.petsAllowed = petsAllowed;
-        this.musicPreference = musicPreference;
-        this.driverGender = driverGender;
-        this.travelPreference = travelPreference;
-        this.maxPassengerPrice = maxPassengerPrice;
-        this.passengerSeatsNeeded = passengerSeatsNeeded;
-        this.requirePets = requirePets;
-        this.requireMusic = requireMusic;
-        this.requireGender = requireGender;
+        this.rating = rating;
+        this.departureDatetime = departureDatetime;
+        this.createdAt = LocalDateTime.now();
     }
 
     // Getters y Setters
 
-    public Long getRideId() {
-        return rideId;
+    public Long getId() {
+        return id;
     }
 
-    public void setRideId(Long rideId) {
-        this.rideId = rideId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getOrigin() {
-        return origin;
+    public Long getRouteId() {
+        return routeId;
     }
 
-    public void setOrigin(String origin) {
-        this.origin = origin;
+    public void setRouteId(Long routeId) {
+        this.routeId = routeId;
     }
 
-    public String getDestination() {
-        return destination;
+    public Long getDriverId() {
+        return driverId;
     }
 
-    public void setDestination(String destination) {
-        this.destination = destination;
+    public void setDriverId(Long driverId) {
+        this.driverId = driverId;
+    }
+
+    public Long getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(Long vehicleId) {
+        this.vehicleId = vehicleId;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Integer getAvailableSeats() {
@@ -135,20 +124,28 @@ public class Ride {
         this.availableSeats = availableSeats;
     }
 
-    public String getCar() {
-        return car;
+    public Integer getMaxSeats() {
+        return maxSeats;
     }
 
-    public void setCar(String car) {
-        this.car = car;
+    public void setMaxSeats(Integer maxSeats) {
+        this.maxSeats = maxSeats;
     }
 
-    public String getPlate() {
-        return plate;
+    public Character getPetsAllowed() {
+        return petsAllowed;
     }
 
-    public void setPlate(String plate) {
-        this.plate = plate;
+    public void setPetsAllowed(Character petsAllowed) {
+        this.petsAllowed = petsAllowed;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 
     public LocalDateTime getDepartureDatetime() {
@@ -159,107 +156,11 @@ public class Ride {
         this.departureDatetime = departureDatetime;
     }
 
-    public BigDecimal getSeatPrice() {
-        return seatPrice;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setSeatPrice(BigDecimal seatPrice) {
-        this.seatPrice = seatPrice;
-    }
-
-    public String getDriverName() {
-        return driverName;
-    }
-
-    public void setDriverName(String driverName) {
-        this.driverName = driverName;
-    }
-
-    public String getDriverPhone() {
-        return driverPhone;
-    }
-
-    public void setDriverPhone(String driverPhone) {
-        this.driverPhone = driverPhone;
-    }
-
-    public Double getDriverRating() {
-        return driverRating;
-    }
-
-    public void setDriverRating(Double driverRating) {
-        this.driverRating = driverRating;
-    }
-
-    public Integer getPetsAllowed() {
-        return petsAllowed;
-    }
-
-    public void setPetsAllowed(Integer petsAllowed) {
-        this.petsAllowed = petsAllowed;
-    }
-
-    public Integer getMusicPreference() {
-        return musicPreference;
-    }
-
-    public void setMusicPreference(Integer musicPreference) {
-        this.musicPreference = musicPreference;
-    }
-
-    public String getDriverGender() {
-        return driverGender;
-    }
-
-    public void setDriverGender(String driverGender) {
-        this.driverGender = driverGender;
-    }
-
-    public String getTravelPreference() {
-        return travelPreference;
-    }
-
-    public void setTravelPreference(String travelPreference) {
-        this.travelPreference = travelPreference;
-    }
-
-    public BigDecimal getMaxPassengerPrice() {
-        return maxPassengerPrice;
-    }
-
-    public void setMaxPassengerPrice(BigDecimal maxPassengerPrice) {
-        this.maxPassengerPrice = maxPassengerPrice;
-    }
-
-    public Integer getPassengerSeatsNeeded() {
-        return passengerSeatsNeeded;
-    }
-
-    public void setPassengerSeatsNeeded(Integer passengerSeatsNeeded) {
-        this.passengerSeatsNeeded = passengerSeatsNeeded;
-    }
-
-    public Integer getRequirePets() {
-        return requirePets;
-    }
-
-    public void setRequirePets(Integer requirePets) {
-        this.requirePets = requirePets;
-    }
-
-    public Integer getRequireMusic() {
-        return requireMusic;
-    }
-
-    public void setRequireMusic(Integer requireMusic) {
-        this.requireMusic = requireMusic;
-    }
-
-    public String getRequireGender() {
-        return requireGender;
-    }
-
-    public void setRequireGender(String requireGender) {
-        this.requireGender = requireGender;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
