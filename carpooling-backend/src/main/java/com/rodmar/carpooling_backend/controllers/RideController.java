@@ -4,10 +4,15 @@ import com.rodmar.carpooling_backend.entities.Ride;
 import com.rodmar.carpooling_backend.dto.RideDTO;
 import com.rodmar.carpooling_backend.services.RideService;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.rodmar.carpooling_backend.exception.RideNotFoundException;
+import com.rodmar.carpooling_backend.entities.PassengerSegment;
+import com.rodmar.carpooling_backend.exception.SeatsUnavailableException;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -34,6 +39,20 @@ public class RideController {
         try {
             Ride ride = rideService.createRide(rideDTO);
             return new ResponseEntity<>(ride, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // Endpoint de búsqueda
+    @GetMapping("/search")
+    public ResponseEntity<List<RideDTO>> searchRides(
+            @RequestParam String origin,
+            @RequestParam String destination,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        try {
+            List<RideDTO> rides = rideService.searchRides(origin, destination, date);
+            return new ResponseEntity<>(rides, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -71,4 +90,18 @@ public class RideController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    // Join a ride
+    @PostMapping("/{id}/join")
+    public ResponseEntity<PassengerSegment> joinRide(@PathVariable Long id, @RequestParam Long passengerId) {
+        try {
+            PassengerSegment passengerSegment = rideService.joinRide(id, passengerId);
+            return new ResponseEntity<>(passengerSegment, HttpStatus.CREATED);
+        } catch (RideNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (SeatsUnavailableException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

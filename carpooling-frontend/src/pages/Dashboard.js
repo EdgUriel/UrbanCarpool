@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { FaSearch, FaCar, FaHistory } from "react-icons/fa"; // Iconos para mejorar visualmente los botones
 import MapComponent from "../components/MapComponent";
+import axios from "axios";
 
 const containerStyle = {
   width: "100%",
@@ -19,6 +20,9 @@ const Dashboard = () => {
   const [destination, setDestination] = useState("");
   const [date, setDate] = useState("");
   const [calculateRoute, setCalculateRoute] = useState(false); // Nuevo estado
+  const [availableRides, setAvailableRides] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleOriginChange = (e) => {
     setOrigin(e.target.value);
@@ -32,9 +36,42 @@ const Dashboard = () => {
     setDate(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setCalculateRoute(true); // Activar el cálculo de la ruta
+    setCalculateRoute(true);
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/rides/search",
+        {
+          params: { origin, destination, date },
+        }
+      );
+      setAvailableRides(response.data);
+    } catch (err) {
+      setError("Error fetching available rides.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBookRide = async (rideId) => {
+    const passengerId = localStorage.getItem("userId"); // Adjust based on your authentication method
+    try {
+      await axios.post(`http://localhost:8080/api/rides/${rideId}/join`, null, {
+        params: { passengerId },
+      });
+      alert("Successfully joined the ride!");
+      // Optionally, refresh the available rides
+      setAvailableRides((prevRides) =>
+        prevRides.filter((ride) => ride.id !== rideId)
+      );
+    } catch (err) {
+      alert("Failed to join the ride.");
+      console.error(err);
+    }
   };
 
   return (
@@ -178,6 +215,39 @@ const Dashboard = () => {
               Enter origin and destination to calculate the route.
             </div>
           )}
+        </div>
+        {/* Display available rides */}
+        <div className="mt-8">
+          <h2 className="text-2xl font-semibold mb-4">Available Rides</h2>
+          {loading && <p>Loading available rides...</p>}
+          {error && <p className="text-red-500">{error}</p>}
+          {!loading && availableRides.length === 0 && calculateRoute && (
+            <p>No available rides found for your route.</p>
+          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {availableRides.map((ride) => (
+              <div key={ride.id} className="bg-white p-4 rounded shadow">
+                <h3 className="text-xl font-semibold mb-2">
+                  Ride ID: {ride.id}
+                </h3>
+                <p>
+                  <strong>Driver:</strong> {ride.driverName}
+                </p>
+                <p>
+                  <strong>Price:</strong> ${ride.price}
+                </p>
+                <p>
+                  <strong>Available Seats:</strong> {ride.availableSeats}
+                </p>
+                <button
+                  onClick={() => handleBookRide(ride.id)}
+                  className="mt-4 bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                >
+                  Book this Ride
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

@@ -10,4 +10,7 @@ import java.util.List;
 @Repository
 public interface RideRepository extends JpaRepository<Ride, Long> {
     List<Ride> findByDepartureDatetimeBetween(LocalDateTime start, LocalDateTime end);
+
+    List<Ride> findByRouteOriginAndRouteDestinationAndDepartureDatetimeBetween(
+            String origin, String destination, LocalDateTime start, LocalDateTime end);
 }
