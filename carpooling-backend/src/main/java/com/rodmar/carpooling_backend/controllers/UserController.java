@@ -2,7 +2,6 @@ package com.rodmar.carpooling_backend.controllers;
 
 import com.rodmar.carpooling_backend.entities.User;
 import com.rodmar.carpooling_backend.services.UserService;
-import com.rodmar.carpooling_backend.auth.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,19 +11,21 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
         try {
-            userService.registerUser(user);
-            return ResponseEntity.ok("Usuario registrado exitosamente.");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            User registeredUser = userService.registerUser(user);
+            return ResponseEntity.ok(registeredUser);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor");
         }
     }
 
@@ -53,18 +54,15 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest) {
-        // Busca al usuario por correo
-        Optional<User> optionalUser = userService.findByEmail(loginRequest.getEmail());
+    public ResponseEntity<String> loginUser(@RequestBody User loginUser) {
+        Optional<User> optionalUser = userService.findByEmail(loginUser.getEmail());
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if (!user.getPassword().equals(loginRequest.getPassword())) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas.");
+            if (user.getPassword().equals(loginUser.getPassword())) {
+                return ResponseEntity.ok("Login exitoso.");
             }
-            return ResponseEntity.ok("Login exitoso.");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas.");
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas.");
     }
 }

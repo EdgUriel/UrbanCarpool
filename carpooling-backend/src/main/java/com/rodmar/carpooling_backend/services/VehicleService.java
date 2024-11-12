@@ -1,8 +1,15 @@
 package com.rodmar.carpooling_backend.services;
 
+import com.rodmar.carpooling_backend.entities.User;
 import com.rodmar.carpooling_backend.entities.Vehicle;
+import com.rodmar.carpooling_backend.entities.VehicleModel;
+import com.rodmar.carpooling_backend.entities.VehicleType;
+import com.rodmar.carpooling_backend.repositories.UserRepository;
 import com.rodmar.carpooling_backend.repositories.VehicleRepository;
+import com.rodmar.carpooling_backend.repositories.VehicleModelRepository;
+import com.rodmar.carpooling_backend.repositories.VehicleTypeRepository;
 import com.rodmar.carpooling_backend.dto.VehicleDTO;
+import com.rodmar.carpooling_backend.exceptions.VehicleAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,44 +20,55 @@ import java.util.Optional;
 public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
+    private final UserRepository userRepository;
+    private final VehicleModelRepository vehicleModelRepository;
+    private final VehicleTypeRepository vehicleTypeRepository;
 
     @Autowired
-    public VehicleService(VehicleRepository vehicleRepository) {
+    public VehicleService(VehicleRepository vehicleRepository, 
+                            UserRepository userRepository,
+                            VehicleModelRepository vehicleModelRepository,
+                            VehicleTypeRepository vehicleTypeRepository) {
         this.vehicleRepository = vehicleRepository;
+        this.userRepository = userRepository;
+        this.vehicleModelRepository = vehicleModelRepository;
+        this.vehicleTypeRepository = vehicleTypeRepository;
     }
 
-    // Obtener todos los vehículos
     public List<Vehicle> getAllVehicles() {
         return vehicleRepository.findAll();
     }
 
-    // Obtener un vehículo por su ID
     public Optional<Vehicle> getVehicleById(Long id) {
         return vehicleRepository.findById(id);
     }
 
-    // Crear un nuevo vehículo
     public Vehicle createVehicle(Vehicle vehicle) {
-        // Validar si el vehículo ya existe por la matrícula
         if (vehicleRepository.existsByPlate(vehicle.getPlate())) {
-            throw new IllegalArgumentException("Vehicle with this plate already exists");
+            throw new VehicleAlreadyExistsException("Vehicle with this plate already exists");
         }
         return vehicleRepository.save(vehicle);
     }
 
-    // Eliminar un vehículo por su ID
     public void deleteVehicle(Long id) {
         vehicleRepository.deleteById(id);
     }
 
-    // Método para convertir Vehicle a VehicleDTO
     public VehicleDTO convertToDTO(Vehicle vehicle) {
         return new VehicleDTO(
-            vehicle.getId(),
-            vehicle.getPlate(),
-            vehicle.getUser().getId(),  // Solo el ID del usuario
-            vehicle.getModel().getId(), // Solo el ID del modelo
-            vehicle.getType().getId()   // Solo el ID del tipo
+                vehicle.getId(),
+                vehicle.getPlate(),
+                vehicle.getUser().getId(),
+                vehicle.getModel().getId(),
+                vehicle.getType().getId()
         );
+    }
+
+    public Vehicle convertDTOToEntity(VehicleDTO vehicleDTO) {
+        User user = userRepository.findById(vehicleDTO.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        VehicleModel model = vehicleModelRepository.findById(vehicleDTO.getModelId()).orElseThrow(() -> new IllegalArgumentException("Model not found"));
+        VehicleType type = vehicleTypeRepository.findById(vehicleDTO.getTypeId()).orElseThrow(() -> new IllegalArgumentException("Type not found"));
+
+        return new Vehicle(user, model, type, vehicleDTO.getPlate());
     }
 }

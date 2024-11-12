@@ -1,14 +1,15 @@
 package com.rodmar.carpooling_backend.entities;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "USERS")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
+    @SequenceGenerator(name = "user_seq", sequenceName = "USER_SEQ", allocationSize = 1)
     @Column(name = "ID")
     private Long id;
 
@@ -37,11 +38,11 @@ public class User {
     private String gender;
 
     @Column(name = "created_at", nullable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     public User() {}
 
-    public User(String firstName, String lastName, String email, String password, String phone, String role, Double rating, String gender, LocalDate createdAt) {
+    public User(String firstName, String lastName, String email, String password, String phone, String role, Double rating, String gender, LocalDateTime createdAt) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -125,11 +126,11 @@ public class User {
         this.gender = gender;
     }
 
-    public LocalDate getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDate createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }

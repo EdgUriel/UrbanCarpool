@@ -22,6 +22,8 @@ import ReservationConfirmation from "./pages/ReservationConfirmation";
 import NotificationsPage from "./pages/NotificationsPage";
 import CreateRide from "./pages/CreateRide";
 import FindRide from "./pages/FindRide";
+import RegisterUser from "./pages/RegisterUser";
+import RegisterVehicle from "./pages/RegisterVehicle";
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/search-ride" element={<SearchRide />} />
+        <Route path="/register-user" element={<RegisterUser />} />
+        <Route path="/register-vehicle" element={<RegisterVehicle />} />
         <Route path="/publish-ride" element={<PublishRide />} />
         <Route path="/ride-details" element={<RideDetails />} />
         <Route path="/user-profile" element={<UserProfile />} />
