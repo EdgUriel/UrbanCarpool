@@ -4,7 +4,10 @@ import com.rodmar.carpooling_backend.entities.Ride;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Repository
 public interface RideRepository extends JpaRepository<Ride, Long> {
-    // Aquí puedes agregar métodos de consulta personalizados si los necesitas
+    List<Ride> findByDepartureDatetimeBetween(LocalDateTime start, LocalDateTime end);
 }

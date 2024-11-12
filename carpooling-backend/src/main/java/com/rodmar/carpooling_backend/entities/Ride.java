@@ -1,11 +1,13 @@
 package com.rodmar.carpooling_backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "RIDES")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Ride {
 
     @Id
@@ -14,31 +16,34 @@ public class Ride {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "route_ID", nullable = false)
-    private Long routeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "route_ID", nullable = false)
+    private Route route;
 
-    @Column(name = "driver_ID", nullable = false)
-    private Long driverId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "driver_ID", nullable = false)
+    private User driver;
 
-    @Column(name = "vehicle_ID", nullable = false)
-    private Long vehicleId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vehicle_ID", nullable = false)
+    private Vehicle vehicle;
 
-    @Column(name = "price", nullable = false, precision = 10)
-    private BigDecimal price;
+    @Column(name = "price", nullable = false)
+    private Double price;
 
     @Column(name = "status", nullable = false)
     private String status;
 
     @Column(name = "available_seats", nullable = false)
-    private Integer availableSeats;
+    private int availableSeats;
 
     @Column(name = "max_seats", nullable = false)
-    private Integer maxSeats;
+    private int maxSeats;
 
-    @Column(name = "pets_allowed")
-    private Character petsAllowed;  // 'Y' para sí, 'N' para no
+    @Column(name = "pets_allowed", nullable = false)
+    private char petsAllowed;
 
-    @Column(name = "rating", precision = 2)
+    @Column(name = "rating")
     private Double rating;
 
     @Column(name = "departure_datetime", nullable = false)
@@ -47,23 +52,8 @@ public class Ride {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    // Constructor sin parámetros
-    public Ride() {}
-
-    // Constructor con parámetros
-    public Ride(Long routeId, Long driverId, Long vehicleId, BigDecimal price, String status, Integer availableSeats,
-                Integer maxSeats, Character petsAllowed, Double rating, LocalDateTime departureDatetime) {
-        this.routeId = routeId;
-        this.driverId = driverId;
-        this.vehicleId = vehicleId;
-        this.price = price;
-        this.status = status;
-        this.availableSeats = availableSeats;
-        this.maxSeats = maxSeats;
-        this.petsAllowed = petsAllowed;
-        this.rating = rating;
-        this.departureDatetime = departureDatetime;
-        this.createdAt = LocalDateTime.now();
+    // Constructor por defecto
+    public Ride() {
     }
 
     // Getters y Setters
@@ -76,35 +66,35 @@ public class Ride {
         this.id = id;
     }
 
-    public Long getRouteId() {
-        return routeId;
+    public Route getRoute() {
+        return route;
     }
 
-    public void setRouteId(Long routeId) {
-        this.routeId = routeId;
+    public void setRoute(Route route) {
+        this.route = route;
     }
 
-    public Long getDriverId() {
-        return driverId;
+    public User getDriver() {
+        return driver;
     }
 
-    public void setDriverId(Long driverId) {
-        this.driverId = driverId;
+    public void setDriver(User driver) {
+        this.driver = driver;
     }
 
-    public Long getVehicleId() {
-        return vehicleId;
+    public Vehicle getVehicle() {
+        return vehicle;
     }
 
-    public void setVehicleId(Long vehicleId) {
-        this.vehicleId = vehicleId;
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
     }
 
-    public BigDecimal getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -116,27 +106,27 @@ public class Ride {
         this.status = status;
     }
 
-    public Integer getAvailableSeats() {
+    public int getAvailableSeats() {
         return availableSeats;
     }
 
-    public void setAvailableSeats(Integer availableSeats) {
+    public void setAvailableSeats(int availableSeats) {
         this.availableSeats = availableSeats;
     }
 
-    public Integer getMaxSeats() {
+    public int getMaxSeats() {
         return maxSeats;
     }
 
-    public void setMaxSeats(Integer maxSeats) {
+    public void setMaxSeats(int maxSeats) {
         this.maxSeats = maxSeats;
     }
 
-    public Character getPetsAllowed() {
+    public char getPetsAllowed() {
         return petsAllowed;
     }
 
-    public void setPetsAllowed(Character petsAllowed) {
+    public void setPetsAllowed(char petsAllowed) {
         this.petsAllowed = petsAllowed;
     }
 
