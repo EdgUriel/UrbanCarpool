@@ -1,8 +1,8 @@
-package com.rodmar.carpooling_backend.controller;
+package com.rodmar.carpooling_backend.controllers;
 
 import com.rodmar.carpooling_backend.entities.Ride;
 import com.rodmar.carpooling_backend.exception.RideNotFoundException;
-import com.rodmar.carpooling_backend.service.RideService;
+import com.rodmar.carpooling_backend.services.RideService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/rides")
-@CrossOrigin(origins = "http://localhost:3000")  // Permite solicitudes desde el frontend
+@CrossOrigin(origins = "http://localhost:3000") // Permite solicitudes desde el frontend
 public class RideController {
 
     @Autowired

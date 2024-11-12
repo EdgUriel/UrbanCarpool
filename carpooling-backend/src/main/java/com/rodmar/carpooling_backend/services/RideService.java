@@ -1,4 +1,4 @@
-package com.rodmar.carpooling_backend.service;
+package com.rodmar.carpooling_backend.services;
 
 import com.rodmar.carpooling_backend.entities.Ride;
 import com.rodmar.carpooling_backend.repositories.RideRepository;
