@@ -1,52 +1,23 @@
-package com.rodmar.carpooling_backend.entities;
+package com.rodmar.carpooling_backend.dto;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "USERS")
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
-    @SequenceGenerator(name = "user_seq", sequenceName = "USER_SEQ", allocationSize = 1)
-    @Column(name = "ID")
+public class UserDTO {
     private Long id;
-
-    @Column(name = "first_name", nullable = false)
     private String firstName;
-
-    @Column(name = "last_name", nullable = false)
     private String lastName;
-
-    @Column(name = "email", nullable = false, unique = true)
     private String email;
-
-    @Column(name = "password", nullable = false)
-    private String password;
-
-    @Column(name = "phone")
     private String phone;
-
-    @Column(name = "role", nullable = false)
     private String role;
-
-    @Column(name = "rating", precision = 2)
     private Double rating;
-
-    @Column(name = "gender")
     private String gender;
-
-    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    public User() {}
-
-    public User(String firstName, String lastName, String email, String password, String phone, String role, Double rating, String gender, LocalDateTime createdAt) {
+    public UserDTO(Long id, String firstName, String lastName, String email, String phone, String role, Double rating, String gender, LocalDateTime createdAt) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.password = password;
         this.phone = phone;
         this.role = role;
         this.rating = rating;
@@ -54,6 +25,7 @@ public class User {
         this.createdAt = createdAt;
     }
 
+    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -84,14 +56,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getPhone() {

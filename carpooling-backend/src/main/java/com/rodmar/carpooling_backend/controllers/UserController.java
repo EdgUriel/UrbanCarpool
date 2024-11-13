@@ -2,29 +2,32 @@ package com.rodmar.carpooling_backend.controllers;
 
 import com.rodmar.carpooling_backend.entities.User;
 import com.rodmar.carpooling_backend.services.UserService;
-import com.rodmar.carpooling_backend.auth.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.rodmar.carpooling_backend.dto.UserDTO;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
+    public ResponseEntity<User> registerUser(@RequestBody User user) {
         try {
-            userService.registerUser(user);
-            return ResponseEntity.ok("Usuario registrado exitosamente.");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            user.setCreatedAt(LocalDateTime.now()); // Aseguramos que se establezca la fecha de creación
+            User newUser = userService.saveUser(user); // Llamada al servicio para guardar el usuario
+            return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -53,18 +56,15 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest) {
-        // Busca al usuario por correo
-        Optional<User> optionalUser = userService.findByEmail(loginRequest.getEmail());
+    public ResponseEntity<String> loginUser(@RequestBody User loginUser) {
+        Optional<User> optionalUser = userService.findByEmail(loginUser.getEmail());
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if (!user.getPassword().equals(loginRequest.getPassword())) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas.");
+            if (user.getPassword().equals(loginUser.getPassword())) {
+                return ResponseEntity.ok("Login exitoso.");
             }
-            return ResponseEntity.ok("Login exitoso.");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas.");
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas.");
     }
 }

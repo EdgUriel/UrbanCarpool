@@ -1,8 +1,8 @@
 package com.rodmar.carpooling_backend.controllers;
 
-import com.rodmar.carpooling_backend.entities.Vehicle;
 import com.rodmar.carpooling_backend.services.VehicleService;
 import com.rodmar.carpooling_backend.dto.VehicleDTO;
+import com.rodmar.carpooling_backend.entities.Vehicle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +24,11 @@ public class VehicleController {
         this.vehicleService = vehicleService;
     }
 
-    // Obtener todos los vehículos
     @GetMapping
     public List<Vehicle> getAllVehicles() {
         return vehicleService.getAllVehicles();
     }
 
-    // Obtener un vehículo por ID
     @GetMapping("/{id}")
     public ResponseEntity<Vehicle> getVehicleById(@PathVariable Long id) {
         Optional<Vehicle> vehicle = vehicleService.getVehicleById(id);
@@ -38,18 +36,17 @@ public class VehicleController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    // Crear un nuevo vehículo
     @PostMapping
-    public ResponseEntity<Vehicle> createVehicle(@RequestBody Vehicle vehicle) {
+    public ResponseEntity<Vehicle> createVehicle(@RequestBody VehicleDTO vehicleDTO) {
         try {
+            Vehicle vehicle = vehicleService.convertDTOToEntity(vehicleDTO);
             Vehicle createdVehicle = vehicleService.createVehicle(vehicle);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdVehicle);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // o enviar un mensaje con el error
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
-    // Eliminar un vehículo por ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteVehicle(@PathVariable Long id) {
         try {
@@ -62,12 +59,10 @@ public class VehicleController {
         }
     }
 
-    // Endpoint para obtener vehículos
     @GetMapping("/vehicles")
     public List<VehicleDTO> getVehicles() {
-        List<Vehicle> vehicles = vehicleService.getAllVehicles();  // Suponiendo que tienes este método
-        return vehicles.stream()
-                       .map(vehicle -> vehicleService.convertToDTO(vehicle))  // Convertir a DTO
-                        .collect(Collectors.toList());
+        return vehicleService.getAllVehicles().stream()
+                .map(vehicleService::convertToDTO)
+                .collect(Collectors.toList());
     }
 }
