@@ -15,9 +15,10 @@ import {
 } from "react-icons/fa";
 import MapComponent from "./MapComponent";
 
-const RideCard = ({ ride, onBookRide }) => {
+const RideCard = ({ ride, onBookRide, onAddSeats }) => {
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [selectedSeats, setSelectedSeats] = useState(1);
+  const seatsAvailable = ride.availableSeats > 0;
 
   const handleBookRide = () => {
     setIsConfirmationOpen(true);
@@ -169,6 +170,22 @@ const RideCard = ({ ride, onBookRide }) => {
         </button>
       </div>
 
+      {seatsAvailable ? (
+        <button
+          onClick={() => onAddSeats(ride)}
+          className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Add More Seats
+        </button>
+      ) : (
+        <button
+          disabled
+          className="mt-4 bg-gray-400 text-white px-4 py-2 rounded cursor-not-allowed"
+        >
+          No seats available
+        </button>
+      )}
+
       {isConfirmationOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-gray-800 rounded-xl p-8 max-w-md w-full">
@@ -244,6 +261,7 @@ const RideCard = ({ ride, onBookRide }) => {
 RideCard.propTypes = {
   ride: PropTypes.object.isRequired,
   onBookRide: PropTypes.func.isRequired,
+  onAddSeats: PropTypes.func.isRequired,
 };
 
 export default RideCard;

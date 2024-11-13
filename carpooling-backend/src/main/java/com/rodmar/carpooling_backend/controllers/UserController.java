@@ -2,12 +2,14 @@ package com.rodmar.carpooling_backend.controllers;
 
 import com.rodmar.carpooling_backend.entities.User;
 import com.rodmar.carpooling_backend.services.UserService;
+import com.rodmar.carpooling_backend.services.RideService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.rodmar.carpooling_backend.dto.UserDTO;
+import com.rodmar.carpooling_backend.dto.RideDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,6 +21,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RideService rideService;
 
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@RequestBody User user) {
@@ -41,12 +46,12 @@ public class UserController {
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         Optional<User> user = userService.findByEmail(email);
         return user.map(ResponseEntity::ok)
-                    .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-        Optional<User> user = userService.findByEmail(id.toString()); 
+        Optional<User> user = userService.findByEmail(id.toString());
         if (user.isPresent()) {
             userService.deleteUser(id);
             return ResponseEntity.ok("Usuario eliminado exitosamente.");
@@ -66,5 +71,11 @@ public class UserController {
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas.");
+    }
+
+    @GetMapping("/{userId}/rides")
+    public ResponseEntity<List<RideDTO>> getUserRides(@PathVariable Long userId) {
+        List<RideDTO> userRides = rideService.getUserRides(userId);
+        return ResponseEntity.ok(userRides);
     }
 }

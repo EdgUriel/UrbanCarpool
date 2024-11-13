@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class RideService {
@@ -183,5 +184,38 @@ public class RideService {
         dto.setVehicleBrand(ride.getVehicle().getModel().getBrand().getName());
         dto.setVehicleId(ride.getVehicle().getId());
         return dto;
+    }
+
+    public List<RideDTO> getUserRides(Long userId) {
+        List<PassengerSegment> passengerSegments = passengerSegmentRepository.findByPassengerId(userId);
+        List<Ride> rides = passengerSegments.stream()
+                .map(PassengerSegment::getRide)
+                .distinct()
+                .collect(Collectors.toList());
+        return rides.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    public void addSeatToRide(Long rideId, Long passengerId) throws Exception {
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RideNotFoundException("Ride not found"));
+        if (ride.getAvailableSeats() <= 0) {
+            throw new SeatsUnavailableException("No available seats");
+        }
+        User passenger = userRepository.findById(passengerId)
+                .orElseThrow(() -> new RuntimeException("Passenger not found"));
+
+        // Verificar si el pasajero ya está en el ride
+        Optional<PassengerSegment> existingSegment = passengerSegmentRepository.findByRideIdAndPassengerId(rideId,
+                passengerId);
+        if (existingSegment.isPresent()) {
+            // Lógica para agregar más asientos (esto podría ser incrementar un contador)
+            // Por simplicidad, asumiremos que cada reserva es por un asiento
+        } else {
+            throw new Exception("El pasajero no tiene una reserva en este viaje");
+        }
+
+        // Actualizar los asientos disponibles
+        ride.setAvailableSeats(ride.getAvailableSeats() - 1);
+        rideRepository.save(ride);
     }
 }

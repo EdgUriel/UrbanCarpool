@@ -1,50 +1,71 @@
 // Navbar.js
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from "react";
 
 const Navbar = () => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const dropdownRef = useRef(null)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen)
-  }
+    setIsDropdownOpen(!isDropdownOpen);
+  };
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen)
-  }
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setIsDropdownOpen(false)
+      setIsDropdownOpen(false);
     }
-  }
+  };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const routes = [
-    { href: '/home', label: 'Home' }, // Translated
-    { href: '/dashboard', label: 'Dashboard' }, // Translated
-    { href: '/mainpage', label: 'Map' }, // Translated
-    { href: '/publish-ride', label: 'Publish Ride' }, // Translated
-    { href: '/search-ride', label: 'Search Ride' }, // Translated
-    { href: '/supportpage', label: 'Support' }, // Translated
-  ]
+    { href: "/home", label: "Home" }, // Translated
+    { href: "/my-trips", label: "My Active Trips" }, // Translated
+    { href: "/mainpage", label: "Map" }, // Translated
+    { href: "/publish-ride", label: "Publish Ride" }, // Translated
+    { href: "/search-ride", label: "Search Ride" }, // Translated
+    { href: "/supportpage", label: "Support" }, // Translated
+  ];
 
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900 sticky top-0 z-50 shadow-lg">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a href="/home" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path>
+        <a
+          href="/home"
+          className="flex items-center space-x-3 rtl:space-x-reverse"
+        >
+          <svg
+            className="w-8 h-8 text-blue-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"
+            ></path>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"
+            ></path>
           </svg>
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">UrbanCarpool</span>
+          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+            UrbanCarpool
+          </span>
         </a>
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           <button
@@ -55,33 +76,51 @@ const Navbar = () => {
             onClick={toggleDropdown}
           >
             <span className="sr-only">Open user menu</span> {/* Translated */}
-            <img className="w-8 h-8 rounded-full" src="/images/people/profile-picture-3.jpg" alt="user photo" /> {/* Translated */}
+            <img
+              className="w-8 h-8 rounded-full"
+              src="/images/people/profile-picture-3.jpg"
+              alt="user photo"
+            />{" "}
+            {/* Translated */}
           </button>
           <div
             ref={dropdownRef}
             className={`z-50 ${
-              isDropdownOpen ? 'absolute' : 'hidden'
+              isDropdownOpen ? "absolute" : "hidden"
             } my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600`}
             id="user-dropdown"
-            style={{ top: '3rem', right: '1rem' }}
+            style={{ top: "3rem", right: "1rem" }}
           >
             <div className="px-4 py-3">
-              <span className="block text-sm text-gray-900 dark:text-white">Bonnie Green</span>
-              <span className="block text-sm text-gray-500 truncate dark:text-gray-400">name@urbancarpool.com</span>
+              <span className="block text-sm text-gray-900 dark:text-white">
+                Bonnie Green
+              </span>
+              <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
+                name@urbancarpool.com
+              </span>
             </div>
             <ul className="py-2" aria-labelledby="user-menu-button">
               <li>
-                <a href="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                <a
+                  href="/dashboard"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                >
                   Dashboard {/* Translated */}
                 </a>
               </li>
               <li>
-                <a href="/account-settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                <a
+                  href="/account-settings"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                >
                   Settings {/* Translated */}
                 </a>
               </li>
               <li>
-                <a href="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                <a
+                  href="/"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                >
                   Log Out {/* Translated */}
                 </a>
               </li>
@@ -95,13 +134,27 @@ const Navbar = () => {
             onClick={toggleMenu}
           >
             <span className="sr-only">Open main menu</span> {/* Translated */}
-            <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15" />
+            <svg
+              className="w-5 h-5"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 17 14"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M1 1h15M1 7h15M1 13h15"
+              />
             </svg>
           </button>
         </div>
         <div
-          className={`items-center justify-between w-full md:flex md:w-auto md:order-1 ${isMenuOpen ? 'block' : 'hidden'}`}
+          className={`items-center justify-between w-full md:flex md:w-auto md:order-1 ${
+            isMenuOpen ? "block" : "hidden"
+          }`}
           id="navbar-user"
         >
           <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
@@ -119,7 +172,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

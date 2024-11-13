@@ -100,4 +100,16 @@ public class RideController {
         }
     }
 
+    @PostMapping("/{rideId}/addSeats")
+    public ResponseEntity<?> addSeatsToRide(
+            @PathVariable Long rideId,
+            @RequestParam Long passengerId) {
+        try {
+            rideService.addSeatToRide(rideId, passengerId);
+            return ResponseEntity.ok("Seat added successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
 }

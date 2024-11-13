@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { UserProvider } from './contexts/UserContext';
+import { UserProvider } from "./contexts/UserContext";
 
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
@@ -16,6 +16,7 @@ import SearchRide from "./pages/SearchRide";
 import PublishRide from "./pages/PublishRide";
 import RideDetails from "./pages/RideDetails";
 import UserProfile from "./pages/UserProfile";
+import MyTrip from "./pages/MyTrip";
 import TripHistory from "./pages/TripHistory";
 import RatingsReviews from "./pages/RatignsReviews";
 import AccountSettings from "./pages/AccountSettings";
@@ -50,10 +51,14 @@ function App() {
           <Route path="/user-profile" element={<UserProfile />} />
           <Route path="/create-ride" element={<CreateRide />} />
           <Route path="/find-ride" element={<FindRide />} />
+          <Route path="/my-trips" element={<MyTrip />} />
           <Route path="/trip-history" element={<TripHistory />} />
           <Route path="/rating-reviews" element={<RatingsReviews />} />
           <Route path="/account-settings" element={<AccountSettings />} />
-          <Route path="/publish-confirmation" element={<PublishConfirmation />} />
+          <Route
+            path="/publish-confirmation"
+            element={<PublishConfirmation />}
+          />
           <Route
             path="/reservation-confirmation"
             element={<ReservationConfirmation />}
