@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.rodmar.carpooling_backend.dto.UserDTO;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,14 +21,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
+    public ResponseEntity<User> registerUser(@RequestBody User user) {
         try {
-            User registeredUser = userService.registerUser(user);
-            return ResponseEntity.ok(registeredUser);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            user.setCreatedAt(LocalDateTime.now()); // Aseguramos que se establezca la fecha de creación
+            User newUser = userService.saveUser(user); // Llamada al servicio para guardar el usuario
+            return new ResponseEntity<>(newUser, HttpStatus.CREATED);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

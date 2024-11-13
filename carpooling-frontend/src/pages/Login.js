@@ -1,59 +1,120 @@
-// For users to access their accounts with their credentials.
-
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { User, Lock, AlertCircle, CheckCircle } from 'lucide-react';
 
-function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+const Login = () => {
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState(false);
 
-    const handleSubmit = (e) => {
+    const navigate = useNavigate();
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Aquí iría la lógica para manejar el inicio de sesión
-        console.log('Logging in:', { email, password });
+        setLoading(true);
+        setError('');
+        try {
+            const response = await axios.post('http://localhost:8080/api/users/login', formData);
+            setSuccess(true);
+            setTimeout(() => {
+                navigate('/dashboard');
+            }, 2000);
+        } catch (error) {
+            console.error(error);
+            setError('Incorrect credentials. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <div className="bg-gray-100 dark:bg-gray-900 flex items-center justify-center min-h-screen rounded-lg shadow-lg mx-auto my-2" style={{ padding: '10px 20px', maxWidth: '95%', margin: '20px auto' }}>
-            <form className="max-w-md mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg shadow" autoComplete="off" onSubmit={handleSubmit}>
-                <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white">Login</h2>
-
-                <div className="relative z-0 w-full mb-5 group">
-                    <input
-                        type="email"
-                        name="email"
-                        id="floating_email"
-                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                    <label htmlFor="floating_email" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email address</label>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-400 to-blue-600">
+            <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-500 ease-in-out hover:scale-105">
+                <div className="mb-8 text-center">
+                    <h2 className="text-3xl font-bold text-gray-800">Welcome Back</h2>
+                    <p className="text-gray-600 mt-2">Log in to your account</p>
                 </div>
-
-                <div className="relative z-0 w-full mb-5 group">
-                    <input
-                        type="password"
-                        name="password"
-                        id="floating_password"
-                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                    <label htmlFor="floating_password" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Password</label>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="relative">
+                        <label htmlFor="email" className="text-sm font-medium text-gray-700 block mb-2">
+                            Email address
+                        </label>
+                        <div className="relative">
+                            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="your@example.com"
+                                value={formData.email}
+                                onChange={handleChange}
+                                className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
+                                required
+                            />
+                        </div>
+                    </div>
+                    <div className="relative">
+                        <label htmlFor="password" className="text-sm font-medium text-gray-700 block mb-2">
+                            Password
+                        </label>
+                        <div className="relative">
+                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="••••••••"
+                                value={formData.password}
+                                onChange={handleChange}
+                                className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
+                                required
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <button 
+                            type="submit" 
+                            className={`w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-300 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            disabled={loading}
+                        >
+                            {loading ? 'Logging in...' : 'Log in'}
+                        </button>
+                    </div>
+                </form>
+                {error && (
+                    <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-lg flex items-center animate-fade-in-down">
+                        <AlertCircle className="mr-2" size={20} />
+                        {error}
+                    </div>
+                )}
+                {success && (
+                    <div className="mt-4 p-4 bg-green-100 text-green-700 rounded-lg flex items-center animate-fade-in-down">
+                        <CheckCircle className="mr-2" size={20} />
+                        Login successful! Redirecting...
+                    </div>
+                )}
+                <div className="mt-6 text-center">
+                    <a href="#" className="text-sm text-blue-600 hover:underline">Forgot your password?</a>
                 </div>
-
-                <button type="submit" className="w-full bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500">Login</button>
-
-                <p className="text-sm font-light text-gray-500 dark:text-gray-400 mt-4">
-                    Don't have an account? <a href="/signup" className="font-medium text-blue-700 hover:underline dark:text-blue-500">Register here</a>
-                </p>
-            </form>
+                <div className="mt-8 text-center">
+                    <p className="text-sm text-gray-600">
+                        Don't have an account? 
+                        <a href="/signup" className="text-blue-600 hover:underline ml-1 font-medium">Sign up</a>
+                    </p>
+                </div>
+            </div>
         </div>
     );
-}
+};
 
 export default Login;
-

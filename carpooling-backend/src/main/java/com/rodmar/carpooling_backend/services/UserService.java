@@ -1,6 +1,7 @@
 package com.rodmar.carpooling_backend.services;
 
 import com.rodmar.carpooling_backend.entities.User;
+import com.rodmar.carpooling_backend.dto.UserDTO;
 import com.rodmar.carpooling_backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User registerUser(User user) {
+    public UserDTO registerUser(User user) {
         if (user.getFirstName() == null || user.getLastName() == null || user.getEmail() == null || user.getPassword() == null) {
             throw new IllegalArgumentException("Todos los campos obligatorios deben ser proporcionados");
         }
@@ -28,18 +29,30 @@ public class UserService {
         if (user.getRole() == null) {
             user.setRole("passenger");
         }
-        // Asignar valores por defecto si faltan
         if (user.getPhone() == null) {
-            user.setPhone("No especificado");  // O puedes lanzar una excepción si es obligatorio
+            user.setPhone("No especificado");
         }
         if (user.getGender() == null) {
-            user.setGender("No especificado");  // O asignar un valor por defecto
+            user.setGender("No especificado");
         }
         if (user.getRating() == null) {
-            user.setRating(0.0);  // O el valor que prefieras
+            user.setRating(0.0);
         }
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        // Convertir User a UserDTO
+        return new UserDTO(
+            savedUser.getId(),
+            savedUser.getFirstName(),
+            savedUser.getLastName(),
+            savedUser.getEmail(),
+            savedUser.getPhone(),
+            savedUser.getRole(),
+            savedUser.getRating(),
+            savedUser.getGender(),
+            savedUser.getCreatedAt()
+        );
     }
 
     public Optional<User> findByEmail(String email) {
@@ -56,5 +69,9 @@ public class UserService {
 
     public Optional<User> findById(Long id) {
     return userRepository.findById(id);
+    }
+
+    public User saveUser(User user) {
+        return userRepository.save(user); // Guardar el usuario usando JPA
     }
 }
