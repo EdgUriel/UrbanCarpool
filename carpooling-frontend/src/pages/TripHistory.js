@@ -1,53 +1,67 @@
-// Shows past trips as both a passenger and driver, with the ability to leave or view ratings and reviews.
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { FaHistory } from 'react-icons/fa'; // Icon for better visual appeal
 
 function TripHistory() {
-    const trips = [
-        { id: 1, role: 'Passenger', date: '2024-09-20', route: 'New York - Boston', rating: '4.5/5' },
-        { id: 2, role: 'Driver', date: '2024-09-18', route: 'Philadelphia - New York', rating: '5/5' },
-        // Más viajes...
-    ];
+    const [trips, setTrips] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const handleRateTrip = (id) => {
-        // Lógica para calificar el viaje
-        console.log(`Rate trip with ID ${id}`);
-    };
+    const userId = 2;
 
-    const handleViewDetails = (id) => {
-        // Lógica para ver detalles del viaje
-        console.log(`View details for trip ID ${id}`);
-    };
+    useEffect(() => {
+        axios
+            .get(`http://localhost:8080/api/ride-history/user/${userId}`)
+            .then((response) => {
+                setTrips(response.data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                setError('Error fetching the history');
+                setLoading(false);
+            });
+    }, [userId]);
+
+    if (loading) return <p className="text-center text-gray-600">Loading...</p>;
+    if (error) return <p className="text-center text-red-500">{error}</p>;
 
     return (
-        <div className="bg-gray-100 dark:bg-gray-900 min-h-screen p-6">
-            <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Trip History</h1>
-                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th className="px-6 py-3">Date</th>
-                            <th className="px-6 py-3">Route</th>
-                            <th className="px-6 py-3">Role</th>
-                            <th className="px-6 py-3">Rating</th>
-                            <th className="px-6 py-3">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {trips.map((trip) => (
-                            <tr key={trip.id} className="bg-white dark:bg-gray-800">
-                                <td className="px-6 py-4">{trip.date}</td>
-                                <td className="px-6 py-4">{trip.route}</td>
-                                <td className="px-6 py-4">{trip.role}</td>
-                                <td className="px-6 py-4">{trip.rating}</td>
-                                <td className="px-6 py-4 space-x-3">
-                                    <button onClick={() => handleViewDetails(trip.id)} className="text-blue-600 dark:text-blue-400 hover:underline">View Details</button>
-                                    <button onClick={() => handleRateTrip(trip.id)} className="text-yellow-600 dark:text-yellow-400 hover:underline">Rate</button>
-                                </td>
+        <div className="bg-gray-100 min-h-screen py-10">
+            {/* Main container */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Header */}
+                <header className="mb-8 text-center border-b-4 pb-6">
+                    <h1 className="text-5xl font-extrabold text-gray-900">Trip History</h1>
+                    <p className="mt-4 text-xl text-gray-700">View your past trips and carpool experiences.</p>
+                </header>
+
+                {/* Trip History Table */}
+                <div className="bg-white p-8 shadow-lg rounded-lg mb-6">
+                    <h2 className="text-3xl font-semibold text-gray-900 mb-6">Your Past Rides</h2>
+                    <table className="w-full text-lg text-left text-gray-500">
+                        <thead className="text-base text-gray-700 uppercase bg-blue-400 text-white">
+                            <tr>
+                                <th className="px-6 py-4">Trip Date</th>
+                                <th className="px-6 py-4">Origin</th>
+                                <th className="px-6 py-4">Destination</th>
+                                <th className="px-6 py-4">Role</th>
+                                <th className="px-6 py-4">Rating</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {trips.map((trip) => (
+                                <tr key={trip.id} className="bg-white hover:bg-gray-100">
+                                    <td className="px-6 py-4 text-lg">{new Date(trip.rideStartTime).toLocaleDateString()}</td>
+                                    <td className="px-6 py-4 text-lg">{trip.rideOrigin}</td>
+                                    <td className="px-6 py-4 text-lg">{trip.rideDestination}</td>
+                                    <td className="px-6 py-4 text-lg capitalize">{trip.role}</td>
+                                    <td className="px-6 py-4 text-lg">{trip.rating || 'Not rated yet'}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
     );
