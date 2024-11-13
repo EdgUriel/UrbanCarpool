@@ -1,6 +1,7 @@
 package com.rodmar.carpooling_backend.controllers;
 
 import com.rodmar.carpooling_backend.entities.Ride;
+import com.rodmar.carpooling_backend.dto.PassengerSegmentDTO;
 import com.rodmar.carpooling_backend.dto.RideDTO;
 import com.rodmar.carpooling_backend.services.RideService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,15 +94,21 @@ public class RideController {
 
     // Join a ride
     @PostMapping("/{id}/join")
-    public ResponseEntity<PassengerSegment> joinRide(@PathVariable Long id, @RequestParam Long passengerId) {
-        try {
-            PassengerSegment passengerSegment = rideService.joinRide(id, passengerId);
-            return new ResponseEntity<>(passengerSegment, HttpStatus.CREATED);
-        } catch (RideNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (SeatsUnavailableException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<PassengerSegmentDTO> joinRide(@PathVariable Long id, @RequestParam Long passengerId) {
+        PassengerSegment passengerSegment = rideService.joinRide(id, passengerId);
+        PassengerSegmentDTO dto = convertToDto(passengerSegment);
+        return new ResponseEntity<>(dto, HttpStatus.CREATED);
+    }
+
+    // Método para convertir a DTO
+    private PassengerSegmentDTO convertToDto(PassengerSegment passengerSegment) {
+        PassengerSegmentDTO dto = new PassengerSegmentDTO();
+        dto.setId(passengerSegment.getId());
+        dto.setRideId(passengerSegment.getRide().getId());
+        dto.setPassengerId(passengerSegment.getPassenger().getId());
+        dto.setSegmentStartId(passengerSegment.getSegmentStart().getId());
+        dto.setSegmentEndId(passengerSegment.getSegmentEnd().getId());
+        return dto;
     }
 
 }

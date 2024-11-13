@@ -1,10 +1,13 @@
 package com.rodmar.carpooling_backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "PASSENGER_SEGMENTS")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class PassengerSegment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "passenger_segment_seq")
     @SequenceGenerator(name = "passenger_segment_seq", sequenceName = "passenger_segment_seq", allocationSize = 1)
@@ -13,18 +16,22 @@ public class PassengerSegment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ride_ID", nullable = false)
+    @JsonIgnoreProperties({ "driver", "vehicle", "route", "passengerSegments" })
     private Ride ride;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "passenger_ID", nullable = false)
+    @JsonIgnoreProperties({ "rides", "vehicles", "password" })
     private User passenger;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "segment_start_ID", nullable = false)
+    @JsonIgnoreProperties({ "route" })
     private RouteSegment segmentStart;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "segment_end_ID", nullable = false)
+    @JsonIgnoreProperties({ "route" })
     private RouteSegment segmentEnd;
 
     // Constructor por defecto

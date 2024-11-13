@@ -58,7 +58,7 @@ const Dashboard = () => {
   };
 
   const handleBookRide = async (rideId) => {
-    const passengerId = localStorage.getItem("userId"); // Adjust based on your authentication method
+    const passengerId = 1; // localStorage.getItem("userId")Adjust based on your authentication method
     try {
       await axios.post(`http://localhost:8080/api/rides/${rideId}/join`, null, {
         params: { passengerId },
