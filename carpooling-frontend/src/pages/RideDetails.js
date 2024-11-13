@@ -243,7 +243,7 @@ const RideDetails = ({ ride }) => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {rides.map((ride) => (
-          <RideCard key={ride.rideId} ride={ride} onBookRide={handleBookRide} />
+          <RideCard key={ride.id} ride={ride} onBookRide={handleBookRide} />
         ))}
       </div>
       {selectedRide && (

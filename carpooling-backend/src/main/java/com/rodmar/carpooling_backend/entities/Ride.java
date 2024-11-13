@@ -11,8 +11,7 @@ import java.time.LocalDateTime;
 public class Ride {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ride_seq")
-    @SequenceGenerator(name = "ride_seq", sequenceName = "ride_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
 

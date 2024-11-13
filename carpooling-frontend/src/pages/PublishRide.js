@@ -22,33 +22,24 @@ function PublishRide() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Obtener el ID del conductor autenticado
-    const driverId = localStorage.getItem("driverId"); // Actualiza esto según tu método de autenticación
-
-    // Obtener el ID del vehículo del conductor
-    const vehicleId = localStorage.getItem("vehicleId"); // Actualiza esto según tu método de gestión de vehículos
-
+    const driverId = localStorage.getItem("driverId");
+    const vehicleId = localStorage.getItem("vehicleId");
     try {
       const dataToSend = {
-        origin: formData.origin,
-        destination: formData.destination,
-        departureDatetime: formData.departureDatetime,
-        availableSeats: parseInt(formData.availableSeats),
-        seatPrice: parseFloat(formData.seatPrice),
-        petsAllowed: formData.petsAllowed,
+        ...formData,
         driverId: parseInt(driverId),
         vehicleId: parseInt(vehicleId),
+        availableSeats: parseInt(formData.availableSeats),
+        seatPrice: parseFloat(formData.seatPrice),
+        departureDatetime: new Date(formData.departureDatetime).toISOString(),
+        petsAllowed: formData.petsAllowed, // Enviar como booleano
       };
-
+      console.log("Data to send:", dataToSend);
       const response = await axios.post(
         "http://localhost:8080/api/rides",
         dataToSend
       );
       alert("Ride published successfully");
-      console.log(response.data);
-
-      // Resetear el formulario
       setFormData({
         origin: "",
         destination: "",

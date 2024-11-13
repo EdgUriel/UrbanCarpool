@@ -1,6 +1,7 @@
 package com.rodmar.carpooling_backend.controllers;
 
 import com.rodmar.carpooling_backend.entities.Ride;
+import com.rodmar.carpooling_backend.dto.CreateRideDTO;
 import com.rodmar.carpooling_backend.dto.PassengerSegmentDTO;
 import com.rodmar.carpooling_backend.dto.RideDTO;
 import com.rodmar.carpooling_backend.services.RideService;
@@ -14,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/rides")
@@ -36,16 +39,28 @@ public class RideController {
 
     // Crear un nuevo viaje
     @PostMapping
-    public ResponseEntity<Ride> createRide(@RequestBody RideDTO rideDTO) {
+    public ResponseEntity<Ride> createRide(@RequestBody CreateRideDTO createRideDTO) {
         try {
-            Ride ride = rideService.createRide(rideDTO);
+            Map<String, Object> rideData = new HashMap<>();
+            rideData.put("origin", createRideDTO.getOrigin());
+            rideData.put("destination", createRideDTO.getDestination());
+            rideData.put("date", createRideDTO.getDate());
+            rideData.put("seatsAvailable", createRideDTO.getSeatsAvailable());
+            Ride ride = rideService.createNewRide(rideData);
             return new ResponseEntity<>(ride, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    // Endpoint de búsqueda
+    /**
+     * Endpoint para buscar viajes que coincidan con los criterios proporcionados.
+     *
+     * @param origin      Origen del pasajero.
+     * @param destination Destino del pasajero.
+     * @param date        Fecha del viaje.
+     * @return Lista de RideDTO que coinciden con los criterios.
+     */
     @GetMapping("/search")
     public ResponseEntity<List<RideDTO>> searchRides(
             @RequestParam String origin,
@@ -59,7 +74,7 @@ public class RideController {
         }
     }
 
-    // Obtener un viaje por su ID
+    // Endpoint para obtener un viaje por su ID
     @GetMapping("/{id}")
     public ResponseEntity<Ride> getRideById(@PathVariable Long id) {
         try {
@@ -70,45 +85,19 @@ public class RideController {
         }
     }
 
-    // Actualizar un viaje existente
-    @PutMapping("/{id}")
-    public ResponseEntity<Ride> updateRide(@PathVariable Long id, @RequestBody Ride ride) {
-        try {
-            Ride updatedRide = rideService.updateRide(id, ride);
-            return new ResponseEntity<>(updatedRide, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    // Eliminar un viaje
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRide(@PathVariable Long id) {
-        try {
-            rideService.deleteRide(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    // Join a ride
     @PostMapping("/{id}/join")
     public ResponseEntity<PassengerSegmentDTO> joinRide(@PathVariable Long id, @RequestParam Long passengerId) {
-        PassengerSegment passengerSegment = rideService.joinRide(id, passengerId);
-        PassengerSegmentDTO dto = convertToDto(passengerSegment);
-        return new ResponseEntity<>(dto, HttpStatus.CREATED);
-    }
-
-    // Método para convertir a DTO
-    private PassengerSegmentDTO convertToDto(PassengerSegment passengerSegment) {
-        PassengerSegmentDTO dto = new PassengerSegmentDTO();
-        dto.setId(passengerSegment.getId());
-        dto.setRideId(passengerSegment.getRide().getId());
-        dto.setPassengerId(passengerSegment.getPassenger().getId());
-        dto.setSegmentStartId(passengerSegment.getSegmentStart().getId());
-        dto.setSegmentEndId(passengerSegment.getSegmentEnd().getId());
-        return dto;
+        try {
+            PassengerSegmentDTO passengerSegment = rideService.joinRide(id, passengerId);
+            return new ResponseEntity<>(passengerSegment, HttpStatus.CREATED);
+        } catch (RideNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (SeatsUnavailableException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            e.printStackTrace(); // Esto imprimirá el error en los logs
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

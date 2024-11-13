@@ -1,9 +1,11 @@
 // Main user hub after logging in, with quick links to search for rides, publish rides, or view travel history.
 
 import React, { useState } from "react";
+import axios from "axios";
+import RideCard from "../components/RideCard";
+import ConfirmTrip from "../components/ConfirmTrip";
 import { FaSearch, FaCar, FaHistory } from "react-icons/fa"; // Iconos para mejorar visualmente los botones
 import MapComponent from "../components/MapComponent";
-import axios from "axios";
 
 const containerStyle = {
   width: "100%",
@@ -23,6 +25,7 @@ const Dashboard = () => {
   const [availableRides, setAvailableRides] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedTrip, setSelectedTrip] = useState(null);
 
   const handleOriginChange = (e) => {
     setOrigin(e.target.value);
@@ -57,17 +60,25 @@ const Dashboard = () => {
     }
   };
 
-  const handleBookRide = async (rideId) => {
-    const passengerId = 1; // localStorage.getItem("userId")Adjust based on your authentication method
+  const handleBookRide = (ride) => {
+    setSelectedTrip(ride);
+  };
+
+  const handleConfirmBooking = async () => {
     try {
-      await axios.post(`http://localhost:8080/api/rides/${rideId}/join`, null, {
-        params: { passengerId },
-      });
-      alert("Successfully joined the ride!");
-      // Optionally, refresh the available rides
-      setAvailableRides((prevRides) =>
-        prevRides.filter((ride) => ride.id !== rideId)
+      const passengerId = localStorage.getItem("userId"); // Asegúrate de que este ID es válido
+      await axios.post(
+        `http://localhost:8080/api/rides/${selectedTrip.id}/join`,
+        null,
+        {
+          params: { passengerId: 1 },
+        }
       );
+      alert("Successfully joined the ride!");
+      setAvailableRides((prevRides) =>
+        prevRides.filter((ride) => ride.id !== selectedTrip.id)
+      );
+      setSelectedTrip(null);
     } catch (err) {
       alert("Failed to join the ride.");
       console.error(err);
@@ -226,29 +237,22 @@ const Dashboard = () => {
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {availableRides.map((ride) => (
-              <div key={ride.id} className="bg-white p-4 rounded shadow">
-                <h3 className="text-xl font-semibold mb-2">
-                  Ride ID: {ride.id}
-                </h3>
-                <p>
-                  <strong>Driver:</strong> {ride.driverName}
-                </p>
-                <p>
-                  <strong>Price:</strong> ${ride.price}
-                </p>
-                <p>
-                  <strong>Available Seats:</strong> {ride.availableSeats}
-                </p>
-                <button
-                  onClick={() => handleBookRide(ride.id)}
-                  className="mt-4 bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-                >
-                  Book this Ride
-                </button>
-              </div>
+              <RideCard
+                key={ride.id} // Usa ride.id en lugar de ride.rideId
+                ride={ride}
+                onBookRide={handleBookRide}
+              />
             ))}
           </div>
         </div>
+        {/* Confirmación de reserva */}
+        {selectedTrip && (
+          <ConfirmTrip
+            tripDetails={selectedTrip}
+            onConfirm={handleConfirmBooking}
+            onCancel={() => setSelectedTrip(null)}
+          />
+        )}
       </div>
     </div>
   );
