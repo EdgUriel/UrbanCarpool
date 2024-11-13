@@ -78,8 +78,26 @@ public class RideService {
         rideDTO.setAvailableSeats(ride.getAvailableSeats());
         rideDTO.setSeatPrice(ride.getPrice());
         rideDTO.setPetsAllowed(ride.getPetsAllowed() == 'Y');
-        rideDTO.setDriverId(ride.getDriver().getId());
-        rideDTO.setVehicleId(ride.getVehicle().getId());
+
+        // Obtener y mapear los datos del conductor
+        User driver = ride.getDriver();
+        if (driver != null) {
+            rideDTO.setDriverId(driver.getId());
+            rideDTO.setDriverName(driver.getFirstName() + " " + driver.getLastName());
+            rideDTO.setDriverRating(driver.getRating());
+            rideDTO.setDriverGender(driver.getGender());
+        }
+
+        // Obtener y mapear los datos del vehículo
+        Vehicle vehicle = ride.getVehicle();
+        if (vehicle != null) {
+            rideDTO.setCar(vehicle.getModel().getName());
+            rideDTO.setPlate(vehicle.getPlate());
+            rideDTO.setVehicleType(vehicle.getType().getName());
+            rideDTO.setVehicleBrand(vehicle.getModel().getBrand().getName());
+            rideDTO.setVehicleId(vehicle.getId());
+        }
+
         return rideDTO;
     }
 

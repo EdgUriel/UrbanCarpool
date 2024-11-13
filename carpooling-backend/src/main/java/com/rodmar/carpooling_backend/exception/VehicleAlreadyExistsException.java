@@ -1,4 +1,4 @@
-package com.rodmar.carpooling_backend.exceptions;
+package com.rodmar.carpooling_backend.exception;
 
 public class VehicleAlreadyExistsException extends RuntimeException {
     public VehicleAlreadyExistsException(String message) {

@@ -235,7 +235,7 @@ const Dashboard = () => {
           {!loading && availableRides.length === 0 && calculateRoute && (
             <p>No available rides found for your route.</p>
           )}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
             {availableRides.map((ride) => (
               <RideCard
                 key={ride.id} // Usa ride.id en lugar de ride.rideId

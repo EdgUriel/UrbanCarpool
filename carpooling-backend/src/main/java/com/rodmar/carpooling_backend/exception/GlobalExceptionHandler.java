@@ -1,10 +1,10 @@
-package com.rodmar.carpooling_backend.exceptions;
+package com.rodmar.carpooling_backend.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import com.rodmar.carpooling_backend.exceptions.VehicleAlreadyExistsException;
+import com.rodmar.carpooling_backend.exception.VehicleAlreadyExistsException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

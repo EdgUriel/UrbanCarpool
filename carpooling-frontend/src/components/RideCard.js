@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   FaStar,
@@ -28,14 +28,54 @@ const RideCard = ({ ride, onBookRide }) => {
     setIsConfirmationOpen(false);
   };
 
+  useEffect(() => {
+    const script = document.createElement("script");
+    const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap${ride.id}`;
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+
+    window[`initMap${ride.id}`] = () => {
+      const map = new window.google.maps.Map(
+        document.getElementById(`map${ride.id}`),
+        {
+          center: { lat: 20.6597, lng: -103.3496 },
+          zoom: 12,
+        }
+      );
+
+      if (ride.origin && ride.destination) {
+        const directionsService = new window.google.maps.DirectionsService();
+        const directionsRenderer = new window.google.maps.DirectionsRenderer();
+        directionsRenderer.setMap(map);
+
+        const request = {
+          origin: ride.origin,
+          destination: ride.destination,
+          travelMode: window.google.maps.TravelMode.DRIVING,
+        };
+
+        directionsService.route(request, (result, status) => {
+          if (status === "OK") {
+            directionsRenderer.setDirections(result);
+          } else {
+            console.error("Error al obtener las direcciones:", status);
+          }
+        });
+      }
+    };
+
+    return () => {
+      document.body.removeChild(script);
+      delete window[`initMap${ride.id}`];
+    };
+  }, [ride.origin, ride.destination, ride.id]);
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl w-full max-w-2xl mx-auto">
       <div className="relative h-48">
-        <MapComponent
-          origin={ride.origin}
-          destination={ride.destination}
-          mapId={ride.id}
-        />
+        <div id={`map${ride.id}`} className="absolute inset-0"></div>
         <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black to-transparent text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
